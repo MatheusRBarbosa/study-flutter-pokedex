@@ -3,7 +3,7 @@ import 'package:pokedex/Utils/Color.dart';
 import 'package:pokedex/models/Pokemon.dart';
 
 Widget pokemonCardGrid(Pokemon pokemon) {
-  return Expanded(
+  return Container(
       child: Stack(
     alignment: Alignment.center,
     children: [

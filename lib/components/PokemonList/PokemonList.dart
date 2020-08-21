@@ -9,22 +9,27 @@ Widget futurePokemonList(Future<List<Pokemon>> future) {
         if (snapshot.hasData &&
             snapshot.connectionState == ConnectionState.done) {
           return ListView(
-            children: snapshot.data.map((e) => _pokemonCard(e)).toList(),
+            children:
+                snapshot.data.map((e) => _pokemonCard(context, e)).toList(),
           );
         }
         return CircularProgressIndicator();
       });
 }
 
-Widget _pokemonCard(Pokemon pokemon) {
-  return Container(
-    padding: EdgeInsets.all(5),
-    height: 220,
-    width: double.maxFinite,
-    child: Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
-      child: pokemonCardList(pokemon),
+Widget _pokemonCard(BuildContext context, Pokemon pokemon) {
+  return GestureDetector(
+    onTap: () => Navigator.pushNamed(context, '/pokemon'),
+    child: Container(
+      padding: EdgeInsets.all(5),
+      height: 220,
+      width: double.maxFinite,
+      child: Card(
+        elevation: 2,
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
+        child: pokemonCardList(pokemon),
+      ),
     ),
   );
 }

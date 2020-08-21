@@ -11,7 +11,7 @@ Widget futurePokemonGrid(Future<List<Pokemon>> future) {
           return GridView.count(
             crossAxisCount: 4,
             children: List.generate(snapshot.data.length, (index) {
-              return _pokemonCard(snapshot.data[index]);
+              return _pokemonCard(context, snapshot.data[index]);
             }),
           );
         }
@@ -19,14 +19,18 @@ Widget futurePokemonGrid(Future<List<Pokemon>> future) {
       });
 }
 
-Widget _pokemonCard(Pokemon pokemon) {
-  return Container(
-    height: 220,
-    width: double.maxFinite,
-    child: Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
-      child: pokemonCardGrid(pokemon),
+Widget _pokemonCard(BuildContext context, Pokemon pokemon) {
+  return GestureDetector(
+    onTap: () => Navigator.pushNamed(context, '/pokemon'),
+    child: Container(
+      height: 220,
+      width: double.maxFinite,
+      child: Card(
+        elevation: 2,
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
+        child: pokemonCardGrid(pokemon),
+      ),
     ),
   );
 }
