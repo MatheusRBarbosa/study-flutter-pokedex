@@ -7,7 +7,7 @@ Widget pokemonCardGrid(Pokemon pokemon) {
       child: Stack(
     alignment: Alignment.center,
     children: [
-      getColorByType(pokemon.types),
+      getColorByType(pokemon.types, false),
       Image.network(pokemon.sprite, fit: BoxFit.contain)
     ],
   ));

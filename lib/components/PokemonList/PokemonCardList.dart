@@ -30,7 +30,7 @@ Widget pokemonCardList(Pokemon pokemon) {
           child: Stack(
         alignment: Alignment.center,
         children: [
-          getColorByType(pokemon.types),
+          getColorByType(pokemon.types, false),
           Image.network(pokemon.sprite, width: 170, fit: BoxFit.contain)
         ],
       )),

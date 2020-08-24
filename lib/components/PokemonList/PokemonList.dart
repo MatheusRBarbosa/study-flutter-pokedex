@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pokedex/components/PokemonList/PokemonCardList.dart';
 import 'package:pokedex/models/Pokemon.dart';
+import 'package:pokedex/screens/PokemonDetails.dart';
 
 Widget futurePokemonList(Future<List<Pokemon>> future) {
   return FutureBuilder<List<Pokemon>>(
@@ -19,7 +20,12 @@ Widget futurePokemonList(Future<List<Pokemon>> future) {
 
 Widget _pokemonCard(BuildContext context, Pokemon pokemon) {
   return GestureDetector(
-    onTap: () => Navigator.pushNamed(context, '/pokemon'),
+    onTap: () => Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => PokemonDetails(
+                  pokemon: pokemon,
+                ))),
     child: Container(
       padding: EdgeInsets.all(5),
       height: 220,

@@ -24,25 +24,28 @@ var colors = {
   'shadow': Colors.grey[100]
 };
 
-Widget getColorByType(List<Type> types) {
+Widget getColorByType(List<Type> types, bool noBorders) {
   if (types.length == 1) {
-    return _oneColorContainer(types[0]);
+    return _oneColorContainer(types[0], noBorders);
   }
-  return _twoColorContainer(types);
+  return _twoColorContainer(types, noBorders);
 }
 
-Widget _oneColorContainer(Type type) {
+Widget _oneColorContainer(Type type, bool noBorders) {
   var color = colors[type.index.name];
+  double borderRadius = noBorders ? 0 : 15;
 
   return Container(
     decoration: BoxDecoration(
-        borderRadius: _getBorderRadius(false, false), color: color),
+        borderRadius: _getBorderRadius(false, false, borderRadius),
+        color: color),
   );
 }
 
-Widget _twoColorContainer(List<Type> types) {
+Widget _twoColorContainer(List<Type> types, bool noBorders) {
   Color color1 = colors[types[0].index.name];
   Color color2 = colors[types[1].index.name];
+  double borderRadius = noBorders ? 0 : 15;
 
   return Container(
     child: Row(
@@ -50,13 +53,15 @@ Widget _twoColorContainer(List<Type> types) {
         Expanded(
           child: Container(
             decoration: BoxDecoration(
-                color: color1, borderRadius: _getBorderRadius(true, false)),
+                color: color1,
+                borderRadius: _getBorderRadius(true, false, borderRadius)),
           ),
         ),
         Expanded(
           child: Container(
             decoration: BoxDecoration(
-                color: color2, borderRadius: _getBorderRadius(true, true)),
+                color: color2,
+                borderRadius: _getBorderRadius(true, true, borderRadius)),
           ),
         ),
       ],
@@ -64,14 +69,17 @@ Widget _twoColorContainer(List<Type> types) {
   );
 }
 
-BorderRadius _getBorderRadius(bool isMultiColor, bool isSecondColor) {
+BorderRadius _getBorderRadius(
+    bool isMultiColor, bool isSecondColor, double borderRadius) {
   if (isMultiColor) {
     if (isSecondColor) {
       return BorderRadius.only(
-          topRight: Radius.circular(15), bottomRight: Radius.circular(15));
+          topRight: Radius.circular(borderRadius),
+          bottomRight: Radius.circular(borderRadius));
     }
     return BorderRadius.only(
-        topLeft: Radius.circular(15), bottomLeft: Radius.circular(15));
+        topLeft: Radius.circular(borderRadius),
+        bottomLeft: Radius.circular(borderRadius));
   }
-  return BorderRadius.all(Radius.circular(15));
+  return BorderRadius.all(Radius.circular(borderRadius));
 }
