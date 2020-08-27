@@ -43,6 +43,16 @@ class Pokemon {
     return labels;
   }
 
+  List<double> getStatsList() {
+    List<double> statsList = List<double>();
+
+    this.stats.forEach((e) {
+      statsList.add(e.baseStat.toDouble());
+    });
+
+    return statsList;
+  }
+
   String getTypesLabel() {
     String label = "";
 
