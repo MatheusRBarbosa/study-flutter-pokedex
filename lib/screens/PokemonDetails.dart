@@ -62,10 +62,10 @@ class _PokemonStateDetails extends State<PokemonDetails> {
             100, // the maximum value that you want to represent (essentially sets the data scale of the chart)
         colors: <Color>[
           Colors.red,
-          Colors.green,
+          Colors.orange,
           Colors.blue,
           Colors.yellow,
-          Colors.indigo,
+          Colors.green,
           Colors.indigo,
         ],
         labels: ["HP", "Attack", "Defense", "SA", "SD", "Speed"],
