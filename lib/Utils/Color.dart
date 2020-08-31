@@ -14,7 +14,7 @@ var colors = {
   'fire': Colors.amber[800],
   'water': Colors.lightBlue,
   'grass': Colors.green[300],
-  'electric': Colors.yellowAccent,
+  'electric': Colors.yellowAccent[400],
   'psychic': Colors.deepPurpleAccent,
   'ice': Colors.cyanAccent[400],
   'dragon': Colors.orangeAccent,

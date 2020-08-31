@@ -58,8 +58,7 @@ class _PokemonStateDetails extends State<PokemonDetails> {
       height: 300,
       child: SpiderChart(
         data: this.widget.pokemon.getStatsList().toList(),
-        maxValue:
-            100, // the maximum value that you want to represent (essentially sets the data scale of the chart)
+        maxValue: 250,
         colors: <Color>[
           Colors.red,
           Colors.orange,
