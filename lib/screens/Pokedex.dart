@@ -15,11 +15,8 @@ class _PokedexState extends State<Pokedex> {
   static ScrollController _scrollController = new ScrollController();
 
   List<Widget> _widgetTabs = <Widget>[
-    PokemonList(
-      future: _futurePokemons,
-      scrollController: _scrollController,
-    ),
-    futurePokemonGrid(_futurePokemons)
+    PokemonList(future: _futurePokemons, scrollController: _scrollController),
+    PokemonGrid(future: _futurePokemons, scrollController: _scrollController)
   ];
 
   void _onItemTapped(int index) {
