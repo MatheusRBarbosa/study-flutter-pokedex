@@ -6,10 +6,8 @@ import 'package:pokedex/services/api.dart';
 
 class PokemonGrid extends StatefulWidget {
   Future<List<Pokemon>> future;
-  final ScrollController scrollController;
 
-  PokemonGrid({Key key, @required this.future, @required this.scrollController})
-      : super(key: key);
+  PokemonGrid({Key key, @required this.future}) : super(key: key);
 
   @override
   _PokemonGrid createState() => _PokemonGrid();
@@ -17,6 +15,7 @@ class PokemonGrid extends StatefulWidget {
 
 class _PokemonGrid extends State<PokemonGrid> {
   List<Pokemon> _pokemonList = List<Pokemon>();
+  ScrollController _scrollController = new ScrollController();
   int _offset = 40;
   int _limit = 15;
   bool _isLoading = false;
@@ -26,7 +25,7 @@ class _PokemonGrid extends State<PokemonGrid> {
   void initState() {
     super.initState();
     _setupInitialList();
-    //_setupScrollListener();
+    _setupScrollListener();
   }
 
   void _setupInitialList() {
@@ -38,11 +37,10 @@ class _PokemonGrid extends State<PokemonGrid> {
   }
 
   void _setupScrollListener() {
-    this.widget.scrollController.addListener(() {
-      double trigger =
-          0.8 * this.widget.scrollController.position.maxScrollExtent;
+    _scrollController.addListener(() {
+      double trigger = 0.5 * _scrollController.position.maxScrollExtent;
 
-      if (this.widget.scrollController.offset >= trigger && !_isLoading) {
+      if (_scrollController.offset >= trigger && !_isLoading) {
         debugPrint("CARREGANDO MAIS POKEMONS");
         setState(() {
           _isLoading = true;
@@ -93,12 +91,21 @@ class _PokemonGrid extends State<PokemonGrid> {
       );
     }
 
-    return GridView.count(
-      crossAxisCount: 4,
-      children: List.generate(_pokemonList.length, (index) {
-        return _pokemonCard(context, _pokemonList[index]);
-      }),
-    );
+    return GridView.builder(
+        controller: _scrollController,
+        itemCount: _pokemonList.length,
+        gridDelegate:
+            SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 4),
+        itemBuilder: (BuildContext context, int index) {
+          if (index == (_pokemonList.length - 1) && _isLoading) {
+            return GridTile(
+              child: CircularProgressIndicator(),
+            );
+          } else {
+            final pokemon = _pokemonList[index];
+            return _pokemonCard(context, pokemon);
+          }
+        });
   }
 }
 

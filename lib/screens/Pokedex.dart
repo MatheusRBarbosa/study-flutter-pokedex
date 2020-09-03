@@ -12,11 +12,10 @@ class Pokedex extends StatefulWidget {
 class _PokedexState extends State<Pokedex> {
   int _selectedIndex = 0;
   static Future<List<Pokemon>> _futurePokemons = fetchIndex();
-  static ScrollController _scrollController = new ScrollController();
 
   List<Widget> _widgetTabs = <Widget>[
-    PokemonList(future: _futurePokemons, scrollController: _scrollController),
-    PokemonGrid(future: _futurePokemons, scrollController: _scrollController)
+    PokemonList(future: _futurePokemons),
+    PokemonGrid(future: _futurePokemons)
   ];
 
   void _onItemTapped(int index) {

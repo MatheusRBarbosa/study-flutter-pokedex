@@ -6,10 +6,8 @@ import 'package:pokedex/services/api.dart';
 
 class PokemonList extends StatefulWidget {
   Future<List<Pokemon>> future;
-  final ScrollController scrollController;
 
-  PokemonList({Key key, @required this.future, @required this.scrollController})
-      : super(key: key);
+  PokemonList({Key key, @required this.future}) : super(key: key);
 
   @override
   _PokemonList createState() => _PokemonList();
@@ -17,6 +15,7 @@ class PokemonList extends StatefulWidget {
 
 class _PokemonList extends State<PokemonList> {
   List<Pokemon> _pokemonList = List<Pokemon>();
+  ScrollController _scrollController = new ScrollController();
   int _offset = 40;
   int _limit = 15;
   bool _isLoading = false;
@@ -38,11 +37,10 @@ class _PokemonList extends State<PokemonList> {
   }
 
   void _setupScrollListener() {
-    this.widget.scrollController.addListener(() {
-      double trigger =
-          0.8 * this.widget.scrollController.position.maxScrollExtent;
+    _scrollController.addListener(() {
+      double trigger = 0.8 * _scrollController.position.maxScrollExtent;
 
-      if (this.widget.scrollController.offset >= trigger && !_isLoading) {
+      if (_scrollController.offset >= trigger && !_isLoading) {
         debugPrint("CARREGANDO MAIS POKEMONS");
         setState(() {
           _isLoading = true;
@@ -59,6 +57,8 @@ class _PokemonList extends State<PokemonList> {
         _pokemonList = value;
         _isLoading = false;
         _offset += _limit;
+        this.widget.future =
+            newList; //Se carregar pra lista, deve carregar pra grid tbm
         debugPrint("NOVOS POKEMONS CARREGADOS");
       });
     });
@@ -94,11 +94,9 @@ class _PokemonList extends State<PokemonList> {
       );
     }
     return ListView.builder(
-        controller: this.widget.scrollController,
+        controller: _scrollController,
         itemCount: _pokemonList.length,
         itemBuilder: (BuildContext context, int index) {
-          var l = _pokemonList.length;
-          debugPrint("TOTAL: $l - INDEX: $index isLoading: $_isLoading");
           if (index == (_pokemonList.length - 1) && _isLoading) {
             return ListTile(
               title: Row(
