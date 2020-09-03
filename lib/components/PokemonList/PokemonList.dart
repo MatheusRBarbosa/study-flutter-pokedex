@@ -5,10 +5,10 @@ import 'package:pokedex/screens/PokemonDetails.dart';
 import 'package:pokedex/services/api.dart';
 
 class PokemonList extends StatefulWidget {
-  final Function() notifyParent;
+  final Function(Future<List<Pokemon>>) updateFuture;
   Future<List<Pokemon>> future;
 
-  PokemonList({Key key, @required this.notifyParent, @required this.future})
+  PokemonList({Key key, @required this.updateFuture, @required this.future})
       : super(key: key);
 
   @override
@@ -62,6 +62,8 @@ class _PokemonList extends State<PokemonList> {
         debugPrint("NOVOS POKEMONS CARREGADOS");
       });
     });
+    //TODO: [FIX] - Deve atualizar o future pai, assim atualiza a gridview tbm
+    this.widget.updateFuture(newList);
   }
 
   Widget _pokemonCard(BuildContext context, Pokemon pokemon) {

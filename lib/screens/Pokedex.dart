@@ -18,9 +18,14 @@ class _PokedexState extends State<Pokedex> {
   void initState() {
     super.initState();
     _widgetTabs = [
-      PokemonList(notifyParent: _refresh, future: _futurePokemons),
+      PokemonList(updateFuture: _updateFuture, future: _futurePokemons),
       PokemonGrid(future: _futurePokemons)
     ];
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   void _onItemTapped(int index) {
@@ -29,8 +34,10 @@ class _PokedexState extends State<Pokedex> {
     });
   }
 
-  void _refresh() {
-    setState(() {});
+  void _updateFuture(Future<List<Pokemon>> newFutureList) {
+    setState(() {
+      _futurePokemons = newFutureList;
+    });
   }
 
   @override
