@@ -5,9 +5,11 @@ import 'package:pokedex/screens/PokemonDetails.dart';
 import 'package:pokedex/services/api.dart';
 
 class PokemonList extends StatefulWidget {
+  final Function() notifyParent;
   Future<List<Pokemon>> future;
 
-  PokemonList({Key key, @required this.future}) : super(key: key);
+  PokemonList({Key key, @required this.notifyParent, @required this.future})
+      : super(key: key);
 
   @override
   _PokemonList createState() => _PokemonList();
@@ -57,8 +59,6 @@ class _PokemonList extends State<PokemonList> {
         _pokemonList = value;
         _isLoading = false;
         _offset += _limit;
-        this.widget.future =
-            newList; //Se carregar pra lista, deve carregar pra grid tbm
         debugPrint("NOVOS POKEMONS CARREGADOS");
       });
     });

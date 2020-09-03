@@ -11,17 +11,26 @@ class Pokedex extends StatefulWidget {
 
 class _PokedexState extends State<Pokedex> {
   int _selectedIndex = 0;
-  static Future<List<Pokemon>> _futurePokemons = fetchIndex();
+  Future<List<Pokemon>> _futurePokemons = fetchIndex();
+  List<Widget> _widgetTabs;
 
-  List<Widget> _widgetTabs = <Widget>[
-    PokemonList(future: _futurePokemons),
-    PokemonGrid(future: _futurePokemons)
-  ];
+  @override
+  void initState() {
+    super.initState();
+    _widgetTabs = [
+      PokemonList(notifyParent: _refresh, future: _futurePokemons),
+      PokemonGrid(future: _futurePokemons)
+    ];
+  }
 
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
     });
+  }
+
+  void _refresh() {
+    setState(() {});
   }
 
   @override
