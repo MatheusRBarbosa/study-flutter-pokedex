@@ -1,69 +1,44 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:pokedex/components/PokemonList/PokemonCardList.dart';
 import 'package:pokedex/models/Pokemon.dart';
 import 'package:pokedex/screens/PokemonDetails.dart';
-import 'package:pokedex/services/api.dart';
+import 'package:pokedex/providers/PokemonListProvider.dart';
 
 class PokemonList extends StatefulWidget {
-  final Function(Future<List<Pokemon>>) updateFuture;
-  Future<List<Pokemon>> future;
-
-  PokemonList({Key key, @required this.updateFuture, @required this.future})
-      : super(key: key);
-
   @override
-  _PokemonList createState() => _PokemonList();
+  _PokemonListState createState() => _PokemonListState();
 }
 
-class _PokemonList extends State<PokemonList> {
-  List<Pokemon> _pokemonList = List<Pokemon>();
+class _PokemonListState extends State<PokemonList> {
   ScrollController _scrollController = new ScrollController();
-  int _offset = 40;
-  int _limit = 15;
   bool _isLoading = false;
 
+  /*
   @override
-  @mustCallSuper
   void initState() {
     super.initState();
-    _setupInitialList();
-    _setupScrollListener();
+  }
+  */
+
+  void _setupScrollListener(Function fecthMore) {
+    _scrollController.addListener(() => _loadMore(fecthMore));
   }
 
-  void _setupInitialList() {
-    this.widget.future.then((list) {
-      setState(() {
-        _pokemonList.addAll(list);
-      });
-    });
+  void _loadMore(Function fetchMore) async {
+    double trigger = 0.8 * _scrollController.position.maxScrollExtent;
+
+    if (_scrollController.offset >= trigger && !_isLoading) {
+      _loadingState(true);
+      await fetchMore();
+      _loadingState(false);
+    }
   }
 
-  void _setupScrollListener() {
-    _scrollController.addListener(() {
-      double trigger = 0.8 * _scrollController.position.maxScrollExtent;
-
-      if (_scrollController.offset >= trigger && !_isLoading) {
-        debugPrint("CARREGANDO MAIS POKEMONS");
-        setState(() {
-          _isLoading = true;
-        });
-        _fetchMore();
-      }
+  void _loadingState(bool loading) {
+    setState(() {
+      _isLoading = loading;
     });
-  }
-
-  void _fetchMore() {
-    Future<List<Pokemon>> newList = fetch(_pokemonList, _offset, _limit);
-    newList.then((value) {
-      setState(() {
-        _pokemonList = value;
-        _isLoading = false;
-        _offset += _limit;
-        debugPrint("NOVOS POKEMONS CARREGADOS");
-      });
-    });
-    //TODO: [FIX] - Deve atualizar o future pai, assim atualiza a gridview tbm
-    this.widget.updateFuture(newList);
   }
 
   Widget _pokemonCard(BuildContext context, Pokemon pokemon) {
@@ -90,16 +65,19 @@ class _PokemonList extends State<PokemonList> {
 
   @override
   Widget build(BuildContext context) {
-    if (_pokemonList.isEmpty) {
+    var provider = context.watch<PokemonListProvider>();
+
+    _setupScrollListener(provider.fetchMore);
+    if (provider.list.isEmpty) {
       return Center(
         child: CircularProgressIndicator(),
       );
     }
     return ListView.builder(
         controller: _scrollController,
-        itemCount: _pokemonList.length,
+        itemCount: provider.list.length,
         itemBuilder: (BuildContext context, int index) {
-          if (index == (_pokemonList.length - 1) && _isLoading) {
+          if (index == (provider.list.length - 1)) {
             return ListTile(
               title: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -109,7 +87,7 @@ class _PokemonList extends State<PokemonList> {
               ),
             );
           } else {
-            final pokemon = _pokemonList[index];
+            final pokemon = provider.list[index];
             return _pokemonCard(context, pokemon);
           }
         });

@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:pokedex/screens/Pokedex.dart';
-import 'package:pokedex/screens/PokemonDetails.dart';
+import 'package:provider/provider.dart';
+import 'package:pokedex/providers/PokemonListProvider.dart';
 
 void main() {
-  runApp(App());
+  runApp(ChangeNotifierProvider(
+    create: (context) => PokemonListProvider(),
+    child: App(),
+  ));
 }
 
 class App extends StatelessWidget {
@@ -18,7 +22,6 @@ class App extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => Pokedex(),
-        '/pokemon': (context) => PokemonDetails()
       },
     );
   }
