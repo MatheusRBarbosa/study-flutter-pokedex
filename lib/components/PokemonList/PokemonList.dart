@@ -14,13 +14,6 @@ class _PokemonListState extends State<PokemonList> {
   ScrollController _scrollController = new ScrollController();
   bool _isLoading = false;
 
-  /*
-  @override
-  void initState() {
-    super.initState();
-  }
-  */
-
   void _setupScrollListener(Function fecthMore) {
     _scrollController.addListener(() => _loadMore(fecthMore));
   }
