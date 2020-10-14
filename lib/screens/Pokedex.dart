@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:pokedex/Controllers/ListController.dart';
 import 'package:pokedex/components/PokemonGrid/PokemonGrid.dart';
 import 'package:pokedex/components/PokemonList/PokemonList.dart';
 import 'package:pokedex/models/Pokemon.dart';
 import 'package:pokedex/services/api.dart';
+import 'package:get/get.dart';
 
 class Pokedex extends StatefulWidget {
   @override
@@ -12,12 +14,18 @@ class Pokedex extends StatefulWidget {
 class _PokedexState extends State<Pokedex> {
   int _selectedIndex = 0;
   Future<List<Pokemon>> _futurePokemons = fetchIndex();
+  final ListController listController = Get.put(ListController());
   List<Widget> _widgetTabs;
 
   @override
   void initState() {
     super.initState();
-    _widgetTabs = [PokemonList(), PokemonGrid(future: _futurePokemons)];
+    _widgetTabs = [
+      PokemonList(
+        controller: listController,
+      ),
+      PokemonGrid(future: _futurePokemons)
+    ];
   }
 
   @override
@@ -28,12 +36,6 @@ class _PokedexState extends State<Pokedex> {
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
-    });
-  }
-
-  void _updateFuture(Future<List<Pokemon>> newFutureList) {
-    setState(() {
-      _futurePokemons = newFutureList;
     });
   }
 

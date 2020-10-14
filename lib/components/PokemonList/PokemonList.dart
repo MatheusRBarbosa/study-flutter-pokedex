@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:pokedex/Controllers/ListController.dart';
 import 'package:pokedex/components/PokemonList/PokemonCardList.dart';
 import 'package:pokedex/models/Pokemon.dart';
 import 'package:pokedex/screens/PokemonDetails.dart';
 import 'package:get/get.dart';
-import 'package:pokedex/Controllers/ListController.dart';
 
 class PokemonList extends StatefulWidget {
+  ListController controller;
+
+  PokemonList({Key key, @required this.controller}) : super(key: key);
+
   @override
   _PokemonList createState() => _PokemonList();
 }
 
 class _PokemonList extends State<PokemonList> {
   ScrollController _scrollController = new ScrollController();
-  final ListController listController = Get.put(ListController());
 
   @override
   @mustCallSuper
@@ -26,9 +29,9 @@ class _PokemonList extends State<PokemonList> {
       double trigger = 0.8 * _scrollController.position.maxScrollExtent;
 
       if (_scrollController.offset >= trigger &&
-          !listController.isLoading.value) {
+          !widget.controller.isLoading.value) {
         debugPrint("CARREGANDO MAIS POKEMONS");
-        listController.fetchMore();
+        widget.controller.fetchMore();
       }
     });
   }
@@ -58,17 +61,17 @@ class _PokemonList extends State<PokemonList> {
   @override
   Widget build(BuildContext context) {
     return Obx(() {
-      if (listController.list.isEmpty) {
+      if (widget.controller.list.isEmpty) {
         return Center(
           child: CircularProgressIndicator(),
         );
       }
       return ListView.builder(
           controller: _scrollController,
-          itemCount: listController.list.length,
+          itemCount: widget.controller.list.length,
           itemBuilder: (BuildContext context, int index) {
-            if (index == (listController.list.length - 1) &&
-                listController.isLoading.value) {
+            if (index == (widget.controller.list.length - 1) &&
+                widget.controller.isLoading.value) {
               return ListTile(
                 title: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -78,7 +81,7 @@ class _PokemonList extends State<PokemonList> {
                 ),
               );
             } else {
-              final pokemon = listController.list[index];
+              final pokemon = widget.controller.list[index];
               return _pokemonCard(context, pokemon);
             }
           });
