@@ -24,7 +24,9 @@ class _PokedexState extends State<Pokedex> {
       PokemonList(
         controller: listController,
       ),
-      PokemonGrid(future: _futurePokemons)
+      PokemonGrid(
+        controller: listController,
+      )
     ];
   }
 
