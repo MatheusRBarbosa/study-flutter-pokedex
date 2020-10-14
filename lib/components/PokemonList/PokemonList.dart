@@ -5,19 +5,15 @@ import 'package:pokedex/screens/PokemonDetails.dart';
 import 'package:get/get.dart';
 import 'package:pokedex/Controllers/ListController.dart';
 
-/*
 class PokemonList extends StatefulWidget {
   @override
   _PokemonList createState() => _PokemonList();
 }
-*/
 
-class PokemonList extends StatelessWidget {
+class _PokemonList extends State<PokemonList> {
   ScrollController _scrollController = new ScrollController();
   final ListController listController = Get.put(ListController());
-  //bool _isLoading = false;
 
-  /*
   @override
   @mustCallSuper
   void initState() {
@@ -29,16 +25,13 @@ class PokemonList extends StatelessWidget {
     _scrollController.addListener(() {
       double trigger = 0.8 * _scrollController.position.maxScrollExtent;
 
-      if (_scrollController.offset >= trigger && !_isLoading) {
+      if (_scrollController.offset >= trigger &&
+          !listController.isLoading.value) {
         debugPrint("CARREGANDO MAIS POKEMONS");
-        setState(() {
-          _isLoading = true;
-        });
         listController.fetchMore();
       }
     });
   }
-  */
 
   Widget _pokemonCard(BuildContext context, Pokemon pokemon) {
     return GestureDetector(
@@ -74,7 +67,8 @@ class PokemonList extends StatelessWidget {
           controller: _scrollController,
           itemCount: listController.list.length,
           itemBuilder: (BuildContext context, int index) {
-            if (index == (listController.list.length - 1)) {
+            if (index == (listController.list.length - 1) &&
+                listController.isLoading.value) {
               return ListTile(
                 title: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
