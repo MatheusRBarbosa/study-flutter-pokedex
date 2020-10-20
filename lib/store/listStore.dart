@@ -14,9 +14,20 @@ abstract class _ListStore with Store {
   @observable
   bool isLoading = false;
 
+  int _offset = 40;
+  int _limit = 15;
+
   initLoad() async {
     isLoading = true;
     list = await fetchIndex();
+    isLoading = false;
+  }
+
+  fetchMore() async {
+    isLoading = true;
+    List<Pokemon> newList = await fetch(list, _offset, _limit);
+    _offset += _limit;
+    list = newList;
     isLoading = false;
   }
 }

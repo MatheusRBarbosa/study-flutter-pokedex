@@ -28,7 +28,7 @@ class _PokemonList extends State<PokemonList> {
 
       if (_scrollController.offset >= trigger && !_listStore.isLoading) {
         debugPrint("CARREGANDO MAIS POKEMONS");
-        //_fetchMore();
+        _listStore.fetchMore();
       }
     });
   }
