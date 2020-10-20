@@ -17,10 +17,7 @@ class _PokedexState extends State<Pokedex> {
   @override
   void initState() {
     super.initState();
-    _widgetTabs = [
-      PokemonList(updateFuture: _updateFuture, future: _futurePokemons),
-      PokemonGrid(future: _futurePokemons)
-    ];
+    _widgetTabs = [PokemonList(), PokemonGrid(future: _futurePokemons)];
   }
 
   @override
