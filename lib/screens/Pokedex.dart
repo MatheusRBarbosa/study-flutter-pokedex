@@ -3,6 +3,7 @@ import 'package:pokedex/components/PokemonGrid/PokemonGrid.dart';
 import 'package:pokedex/components/PokemonList/PokemonList.dart';
 import 'package:pokedex/models/Pokemon.dart';
 import 'package:pokedex/services/api.dart';
+import 'package:pokedex/store/listStore.dart';
 
 class Pokedex extends StatefulWidget {
   @override
@@ -12,12 +13,20 @@ class Pokedex extends StatefulWidget {
 class _PokedexState extends State<Pokedex> {
   int _selectedIndex = 0;
   Future<List<Pokemon>> _futurePokemons = fetchIndex();
+  final _listStore = ListStore();
   List<Widget> _widgetTabs;
 
   @override
   void initState() {
     super.initState();
-    _widgetTabs = [PokemonList(), PokemonGrid(future: _futurePokemons)];
+    _widgetTabs = [
+      PokemonList(
+        listStore: _listStore,
+      ),
+      PokemonGrid(
+        listStore: _listStore,
+      )
+    ];
   }
 
   @override

@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:mobx/mobx.dart';
 import 'package:pokedex/models/Pokemon.dart';
 import 'package:pokedex/services/api.dart';

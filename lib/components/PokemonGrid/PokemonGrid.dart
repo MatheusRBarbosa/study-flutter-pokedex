@@ -1,64 +1,38 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pokedex/components/PokemonGrid/PokemonCardGrid.dart';
 import 'package:pokedex/models/Pokemon.dart';
 import 'package:pokedex/screens/PokemonDetails.dart';
-import 'package:pokedex/services/api.dart';
+import 'package:pokedex/store/listStore.dart';
 
 class PokemonGrid extends StatefulWidget {
-  Future<List<Pokemon>> future;
+  ListStore listStore;
 
-  PokemonGrid({Key key, @required this.future}) : super(key: key);
+  PokemonGrid({Key key, @required this.listStore}) : super(key: key);
 
   @override
   _PokemonGrid createState() => _PokemonGrid();
 }
 
 class _PokemonGrid extends State<PokemonGrid> {
-  List<Pokemon> _pokemonList = List<Pokemon>();
   ScrollController _scrollController = new ScrollController();
-  int _offset = 40;
-  int _limit = 15;
-  bool _isLoading = false;
 
   @override
   @mustCallSuper
   void initState() {
     super.initState();
-    _setupInitialList();
+    widget.listStore.initLoad();
     _setupScrollListener();
-  }
-
-  void _setupInitialList() {
-    this.widget.future.then((list) {
-      setState(() {
-        _pokemonList.addAll(list);
-      });
-    });
   }
 
   void _setupScrollListener() {
     _scrollController.addListener(() {
       double trigger = 0.5 * _scrollController.position.maxScrollExtent;
 
-      if (_scrollController.offset >= trigger && !_isLoading) {
+      if (_scrollController.offset >= trigger && !widget.listStore.isLoading) {
         debugPrint("CARREGANDO MAIS POKEMONS");
-        setState(() {
-          _isLoading = true;
-        });
-        _fetchMore();
+        widget.listStore.fetchMore();
       }
-    });
-  }
-
-  void _fetchMore() {
-    Future<List<Pokemon>> newList = fetch(_pokemonList, _offset, _limit);
-    newList.then((value) {
-      setState(() {
-        _pokemonList = value;
-        _isLoading = false;
-        _offset += _limit;
-        debugPrint("NOVOS POKEMONS CARREGADOS");
-      });
     });
   }
 
@@ -85,45 +59,31 @@ class _PokemonGrid extends State<PokemonGrid> {
 
   @override
   Widget build(BuildContext context) {
-    if (_pokemonList.isEmpty) {
-      return Center(
-        child: CircularProgressIndicator(),
-      );
-    }
-
-    return GridView.builder(
-        controller: _scrollController,
-        itemCount: _pokemonList.length,
-        gridDelegate:
-            SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 4),
-        itemBuilder: (BuildContext context, int index) {
-          if (index == (_pokemonList.length - 1) && _isLoading) {
-            return GridTile(
-              child: CircularProgressIndicator(),
-            );
-          } else {
-            final pokemon = _pokemonList[index];
-            return _pokemonCard(context, pokemon);
-          }
-        });
-  }
-}
-
-/*
-Widget futurePokemonGrid(Future<List<Pokemon>> future) {
-  return FutureBuilder<List<Pokemon>>(
-      future: future,
-      builder: (context, snapshot) {
-        if (snapshot.hasData &&
-            snapshot.connectionState == ConnectionState.done) {
-          return GridView.count(
-            crossAxisCount: 4,
-            children: List.generate(snapshot.data.length, (index) {
-              return _pokemonCard(context, snapshot.data[index]);
-            }),
+    return Observer(
+      builder: (_) {
+        if (widget.listStore.list.isEmpty) {
+          return Center(
+            child: CircularProgressIndicator(),
           );
         }
-        return CircularProgressIndicator();
-      });
+
+        return GridView.builder(
+            controller: _scrollController,
+            itemCount: widget.listStore.list.length,
+            gridDelegate:
+                SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 4),
+            itemBuilder: (BuildContext context, int index) {
+              if (index == (widget.listStore.list.length - 1) &&
+                  widget.listStore.isLoading) {
+                return GridTile(
+                  child: CircularProgressIndicator(),
+                );
+              } else {
+                final pokemon = widget.listStore.list[index];
+                return _pokemonCard(context, pokemon);
+              }
+            });
+      },
+    );
+  }
 }
-*/
